@@ -82,6 +82,7 @@ def user_edit_profile_form(request: HttpRequest):
     """Edit user profile information"""
     user = request.user
     if user.is_authenticated:
+        logout(request)
         new_email = request.POST.get('email')
         new_password = request.POST.get('password')
         user.email = new_email
