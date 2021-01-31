@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+    <div class="col-8 profile">
+        <h2>Информация</h2>
+        <b>Имя пользователя: </b>{{ request.user.username }}<br>
+        <b>Электронная почта: </b>{{ request.user.email }}<br>
+        <a href="{% url "user_edit_profile_page" %}"><input type="button" value="Изменить"></a>
+        <a href="{% url "logout" %}?path={{ request.path }}"><input type="button" value="Выйти"></a>
+        <hr>
+        <h2>Заказы</h2>
+        {% for order in orders %}
+            <a href="{% url "check_order_page" order.id %}">№{{ order.id }}
+                {{ order.creation_datetime|date:'Y-m-d H:i' }} | сумма: {{ order.total_cost }} ₽ | статус: {{ order.status_str }}</a>
+            <br><br>
+        {% empty %}
+            Нет заказов
+        {% endfor %}
+    </div>
+{% endblock %}

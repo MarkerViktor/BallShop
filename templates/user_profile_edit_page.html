@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Изменение профиля{% endblock %}
+
+{% block content %}
+    <div class="col-8">
+        <form action="{% url "user_edit_profile_form" %}" method="post" id="reg_form">
+            {% csrf_token %}
+            <input type="email" name="email" placeholder="Электронная почта" value="{{ request.user.email }}"><br>
+            <input type="password" name="password" placeholder="Пароль" id="password"><br>
+            <input type="password" name="confirm_password" placeholder="Подтверждение пароля" id="confirm_password"><br>
+            <input type="submit" value="Изменить">
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        let password = document.getElementById("password");
+        let confirm_password = document.getElementById("confirm_password");
+
+        function validatePassword() {
+            if (password.value !== confirm_password.value) {
+                confirm_password.setCustomValidity("Пароли не совпадают!");
+            } else {
+                confirm_password.setCustomValidity('');
+            }
+        }
+
+        password.onchange = validatePassword;
+        confirm_password.onkeyup = validatePassword;
+    </script>
+{% endblock %}
+
+{% block left_div %}{% endblock %}
+{% block right_div %}{% endblock %}

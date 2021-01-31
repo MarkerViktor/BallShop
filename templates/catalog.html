@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Каталог {{ sport_type.name }}{% endblock %}
+{% block content %}
+<div class="col-8">
+    {% for product in products %}
+    <div class="vertical_card">
+        <a href="{% url "product_page" product.id %}">
+            <img src="/static/media{{ product.image.url }}"
+                 alt="{{ product.description }}" width="160px" height="160px">
+            <div style="height: 50px;">
+                <b>{{ product.name }}</b><br>
+                {% with rate=product.feedbacks_rate %}
+                {% if rate >= 1 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+                {% if rate >= 2 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+                {% if rate >= 3 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+                {% if rate >= 4 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+                {% if rate == 5 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+                {% endwith %}
+            </div>
+        </a>
+        <span>{{ product.price }} ₽</span><br>
+        {% if request.user.is_authenticated %}
+            <a href="{% url "check_order_page" product.id %}?path={{ request.path }}">
+                <button>Купить</button>
+            </a>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>Товаров нет</p>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block left_div %}
+    <div id="border-div">
+        <form action="{% url "catalog" category_id %}" method="get" class="catalog_left_div">
+            <label>Производитель<br>
+                <select name="manufacturer">
+                    <option {% if not sel_manufacturer %}selected{% endif %} value="">-</option>
+                    {% for manufacturer in manufacturers %}
+                        <option value="{{ manufacturer.id }}"
+                                {% if manufacturer == sel_manufacturer %}selected{% endif %}>
+                            {{ manufacturer.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>Материал<br>
+                <select name="material">
+                    <option {% if not sel_material %} selected {% endif %}value="">-</option>
+                    {% for material in materials %}
+                        <option value="{{ material.id }}"
+                                {% if material == sel_material %}selected{% endif %}>
+                            {{ material.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+            <br>
+            <label>Цена<br>
+                <input type="number" name="price_min" value="{{ price_min }}">
+                -
+                <input type="number" name="price_max" value="{{ price_max }}">
+            </label>
+            <br>
+            <input type="submit" value="Фильтр">
+        </form>
+    </div>
+{% endblock %}

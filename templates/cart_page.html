@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Корзина{% endblock %}
+{% block content %}
+    <div class="col-8 basket">
+        <h1>Корзина</h1>
+        <table>
+            {% for product_in_cart in cart.products.all %}
+                <tr>
+                    <td width="500px"><a href="{% url "product_page" product_in_cart.product.id %}">
+                        {{ product_in_cart.product.name }}</a></td>
+                    <td width="100px" style="text-align: right">{{ product_in_cart.product.price }} ₽</td>
+                    <td width="80px" style="text-align: right">{{ product_in_cart.quantity }}</td>
+                    <td width="100px"><b id="{{ product_in_cart.id }}">{{ product_in_cart.total_cost }}</b></td>
+                </tr>
+            {% empty %}
+                Нет товаров
+            {% endfor %}
+        </table>
+        {% if cart.products.exists %}
+            Итого: <b id="order_price">{{ cart.total_cost }} ₽</b><br>
+            <form action="{% url "cart_clean_form" %}" style="text-align: center">
+                <input type="submit"  value="Очисть корзину">
+            </form><br>
+            <h1>Оформление заказа</h1>
+            {% if form_error %}<p style="color: red">! Заполните все поля</p>{% endif %}
+            <form action="{% url "cart_confirm_form" %}" method="post">
+                {% csrf_token %}
+                <h2>Адрес пункта выдачи</h2>
+                {% for address in addresses %}
+                    <label>
+                        <input type="radio" name="address" value="{{ address.id }}"> {{ address }}
+                    </label><br>
+                {% endfor %}
+                <h2>Способ оплаты</h2>
+                {% for payment_method in payment_methods %}
+                    <label>
+                        <input type="radio" name="payment_method" value="{{ payment_method.id }}"> {{ payment_method }}
+                    </label><br>
+                {% endfor %}
+                <div style="text-align: center"><input type="submit" value="Заказать"></div>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

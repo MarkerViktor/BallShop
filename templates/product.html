@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ product.base_product.name }}{% endblock %}
+{% block content %}
+    <div class="col-8 product">
+        <h1>{{ product.name }}
+        {% with rate=product.feedbacks_rate %}
+        {% if rate >= 1 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+        {% if rate >= 2 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+        {% if rate >= 3 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+        {% if rate >= 4 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+        {% if rate == 5 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+        {% endwith %}</h1><br>
+        <img src="/static/media{{ product.image.url }}" alt="" width="200" height="200"> <i>{{ product.price }} ₽</i>
+        {% if request.user.is_authenticated %}
+            <a href="{% url "cart_add_product_form" product.id %}?path_to_redirect={{ request.path }}">
+            <button>Купить</button>
+            <a/><br>
+        {% endif %}
+        <p>
+            <br><br>{{ product.description }}<br><br>
+            <b>Производитель:</b>
+            <a href="{{ product.maker.link }}" target="_blank">{{ product.maker.name }}</a><br>
+            <b>Материал:</b> {{ product.material.name }}<br>
+        </p>
+        <hr>
+        <h1>Отзывы</h1><br>
+        <div style="text-align: center">
+            {% for feedback in feedbacks %}
+                <b>{{ feedback.author.username }}</b>
+                <i>{{ feedback.creation_datetime |date:'Y-m-d H:i' }}</i><br>
+                {% if feedback.rate >= 1 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+                {% if feedback.rate >= 2 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+                {% if feedback.rate >= 3 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+                {% if feedback.rate >= 4 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+                {% if feedback.rate == 5 %}<u><img src="{% static "img/star.png" %}" width="20"></u>{% endif %}
+                <br>
+                <p>{{ feedback.review_text }}</p>
+                <br>
+            {% empty %}
+                <p>Пока нет отзывов</p>
+            {% endfor %}
+        </div>
+
+        {% if can_feed %}
+            <div id="feedback" style="text-align: center">
+                <b>Оствьте свой отзыв</b>
+                <form action="{% url "add_feedback" product.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <textarea name="text" placeholder="Текст отзыва" style="width: 300px"></textarea><br>
+                    <input type="number" min="0" max="5" placeholder="Оценка" name="rate">
+                    <img src="{% static "img/star.png" %}" width="20"><br>
+                    <input type="submit" style="height: 35px; width: 150px; margin-top: 10px" value="Отправить"><br><br>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

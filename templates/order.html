@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Заказ {{ order.status }}{% endblock %}
+
+{% block content %}
+    <div class="col-8 order">
+        <h1>№ {{ order.id }} от {{ order.creation_datetime|date:'Y-m-d H:i' }}</h1><br>
+        <b>Способ оплаты:</b> {{ order.payment_method.name }}<br>
+        <b>Адрес доставки:</b> {{ order.address }}<br>
+        <b>Статус:</b> {{ order.status_str }}<br>
+        <b>Товары:</b><br>
+        <table>
+            {% for order_product in order.products.all %}
+                <tr>
+                    <td width="500px"><a
+                            href="{% url "product_page" order_product.product.id %}">{{ order_product.product.name }}</a>
+                    </td>
+                    <td width="100px">{{ order_product.product.price }} ₽</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <b>Итого: </b><u>{{ order.total_cost }}</u><br>
+
+    </div>
+{% endblock %}
+

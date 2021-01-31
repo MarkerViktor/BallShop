@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+    <div class="col-8">
+        <form action="{% url "registration_form" %}" method="post" id="reg_form">
+            {% csrf_token %}
+            <input type="text" name="login" placeholder="Имя пользователя" required><br>
+            <input type="email" name="email" placeholder="Электронная почта" required><br>
+            <input type="password" name="password" placeholder="Пароль" required id="password"><br>
+            <input type="password" name="confirm_password" placeholder="Подтверждение пароля" required id="confirm_password"><br>
+            <input type="submit" value="Зарегистироваться">
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        let password = document.getElementById("password");
+        let confirm_password = document.getElementById("confirm_password");
+
+        function validatePassword() {
+            if (password.value !== confirm_password.value) {
+                confirm_password.setCustomValidity("Пароли не совпадают!");
+            } else {
+                confirm_password.setCustomValidity('');
+            }
+        }
+
+        password.onchange = validatePassword;
+        confirm_password.onkeyup = validatePassword;
+    </script>
+{% endblock %}
+
+{% block left_div %}{% endblock %}
+{% block right_div %}{% endblock %}
