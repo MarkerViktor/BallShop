@@ -6,8 +6,15 @@
     <div class="col-8 order">
         <h1>№ {{ order.id }} от {{ order.creation_datetime|date:'Y-m-d H:i' }}</h1><br>
         <b>Способ оплаты:</b> {{ order.payment_method.name }}<br>
-        <b>Адрес доставки:</b> {{ order.address }}<br>
+        <b>Адрес пункта выдачи:</b> {{ order.address }}<br>
         <b>Статус:</b> {{ order.status_str }}<br>
+        Возможны следующие статусы:<br>
+        •	Новый заказ – «new»,<br>
+        •	Ожидается оплата – «wait_for_payment»,<br>
+        •	Ожидается выдача – «wait_for_delivery»,<br>
+        •	Ожидается отзыв – «wait_for_feedback»,<br>
+        •	Завершён – «complete».<br><br>
+
         <b>Товары:</b><br>
         <table>
             {% for order_product in order.products.all %}

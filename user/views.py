@@ -46,11 +46,12 @@ def login_form(request: HttpRequest):
         form_username = request.POST.get('username')
         form_password = request.POST.get('password')
 
-        user = User.objects.get(username=form_username)
-        if user.check_password(form_password):
-            login(request, user)
-        else:
-            return HttpResponse(status=400)
+        try:
+            user = User.objects.get(username=form_username)
+            if user.check_password(form_password):
+                login(request, user)
+        except User.DoesNotExist:
+            pass
 
     path_to_redirect = request.POST.get('path_to_redirect', '/')
     return HttpResponseRedirect(path_to_redirect)
