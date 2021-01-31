@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
 from order.models import Order, OrderStatus
@@ -28,7 +28,7 @@ def can_user_make_feedback_to_product(user: User, product: Ball) -> bool:
 
 def ball_page(request: HttpRequest, ball_id: int):
     """Product-specific page view"""
-    required_ball = Ball.objects.get(id=ball_id)
+    required_ball = get_object_or_404(Ball, id=ball_id)
     ball_feedbacks = Feedback.objects.filter(product=required_ball)
     can_feed = False
     if request.user.is_authenticated:

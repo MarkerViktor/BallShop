@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.http import HttpRequest, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
 from order.models import Order, OrderStatus, ShoppingCart, PaymentMethod, ProductInCart, DeliveryAddress
@@ -10,8 +10,7 @@ from shop.models import Ball
 
 def check_order_page(request: HttpRequest, order_id: int):
     """Page showing the the status of order"""
-    selected_order = Order.objects.get(id=order_id)
-    order_status = OrderStatus(selected_order.status).name
+    selected_order = get_object_or_404(Order, id=order_id)
     return render(request, 'order.html', {'order': selected_order})
 
 
