@@ -85,7 +85,7 @@ def user_edit_profile_form(request: HttpRequest):
         new_email = request.POST.get('email')
         new_password = request.POST.get('password')
         user.email = new_email
-        user.password = new_password
+        user.set_password(new_password)
         user.save()
         return HttpResponseRedirect(reverse('user_profile_page'))
     else:
